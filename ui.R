@@ -2,7 +2,7 @@ library(shiny)
 library(markdown)
 
 navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Machine Learning",
-           
+           # Hello
            
            tabPanel("Descriptive Stats",
                     
