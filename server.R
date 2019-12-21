@@ -1,5 +1,6 @@
 library(shiny)
 library(pastecs)
+library(data.table)
 function(input, output, session) {
   
 #################Generate a summary of the dataset#############################
@@ -28,25 +29,29 @@ function(input, output, session) {
       }
     )
     
-    if(input$disp == "head") {
-      return(head(df))
-    }
-    else 
-      {
-      return(df)
-    }
-    
+    # if(input$disp == "head") {
+    #   return(head(df))
+    # }
+    # else 
+    #   {
+    #   return(df)
+    #}
+    return(df)
   })
   
   #####################Converting into data table########################
-  output$c2 <- renderTable({
-    rendingStuff()})
+  # output$c2 <- renderTable({
+  #   rendingStuff()})
   
   #####################Converting into data table########################
   output$c2summary <- renderPrint({
       summary(rendingStuff())
   })
   
+  ####################################################
+  output$ex1 <- DT::renderDataTable(
+    DT::datatable(rendingStuff(), options = list(pageLength = 10))
+  )
 
   #########################CONTINUOUS PROBABILITY###################################
   
@@ -55,7 +60,17 @@ function(input, output, session) {
     
     if (input$dataset =='iris') { dispdata <- iris } 
     
-    if (input$dataset =='USArrests') { dispdata <- USArrests } 
+    else if (input$dataset =='USArrests') { dispdata <- USArrests } 
+    
+    else if (input$dataset =='OtherData' && is.null(input$file2) ) 
+    {
+      output$ErrorMessage <- renderPrint("Kindly select the data from the descriptive tab to populate here") } else
+      {
+        dispdata <- rendingStuff()
+      }
+    
+    
+    
     
     # print(dispdata)
     

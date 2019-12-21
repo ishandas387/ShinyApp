@@ -47,8 +47,10 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       mainPanel(
                         
                         # Output: Data file ----
-                        tableOutput("c2"),
+                        # tableOutput("c2"),
+                        DT::dataTableOutput('ex1'),
                         verbatimTextOutput("c2summary")
+                      
                         
                       )
                     )
@@ -79,7 +81,10 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                   
                                   choices = c("IRIS" = "iris", 
                                               
-                                              "USArrests" = "USArrests" 
+                                              "USArrests" = "USArrests",
+                                              
+                                              "Other Data" = "OtherData"
+                                              
                                               
                                   ), 
                                   
@@ -143,6 +148,7 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       
                       DT::dataTableOutput('summary'), 
                       verbatimTextOutput("prob"),
+                      verbatimTextOutput("ErrorMessage")
                       
                       #verbatimTextOutput("prt") 
                       
