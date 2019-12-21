@@ -2,28 +2,13 @@ library(shiny)
 library(markdown)
 
 navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Machine Learning",
-           # Hello
            
-           tabPanel("Descriptive Stats",
-                    
-                    #sidebar
-                    
-                    mainPanel(
-                      
-                      # Output: Data file ----
-                      verbatimTextOutput("summary")
-                      
-                      
-                    )
-                    
-           ),
-           tabPanel("Ds stats with fileupload",
-                    verbatimTextOutput("Machine"),
+##############DESCRIPTIVE STATISTICS########################################################
+
+           tabPanel("Descriptive Statistics",
                     sidebarLayout(
                       sidebarPanel(
-                        # radioButtons("plotType", "Plot type",
-                        #              c("Scatter"="p", "Line"="l"),
-                        # ),
+                        
                         fileInput("file2", "Choose CSV File",
                                   multiple = FALSE,
                                   accept = c("text/csv","text/comma-separated-values,text/plain",".csv")),
@@ -68,55 +53,102 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       )
                     )
            ),
-           tabPanel("Discrete",
+
+
+##############CONTINUOUS PROBABILITY########################################################
+
+           tabPanel("Continuous Probability Model",
                     
-                    sidebarPanel(
-                      selectInput("dismodel", "Select Model", 
+                    sidebarPanel( 
+                      
+                      selectInput("conmodel", "Select Model", 
                                   
-                                  choices = c("Binomial" = "binomial", 
-                                              "Poisson" = "poisson", 
-                                              "Geometric" = "geometric"), 
-                                  selected = "binomial" 
+                                  choices = c("Normal" = "normal", 
+                                              
+                                              "Exponential" = "exponential", 
+                                              
+                                              "Uniform" = "uniform"), 
                                   
-                      ), 
-                      conditionalPanel( 
-                        condition = "input.dismodel == 'binomial'", 
-                        numericInput("n", "parameter n in Binomial" , value = 10), 
-                        numericInput("p", "parameter p in Binomial" , value = 0.5) 
+                                  selected = "exponential" 
+                                  
                       ), 
                       
-                      conditionalPanel(     
-                        condition = "input.dismodel == 'poisson'", 
-                        numericInput("lam", "parameter lambda in Poisson" , value = 1) 
+                      
+                      
+                      selectInput("dataset", "Select Data", 
+                                  
+                                  choices = c("IRIS" = "iris", 
+                                              
+                                              "USArrests" = "USArrests" 
+                                              
+                                  ), 
+                                  
+                                  selected = "IRIS" 
+                                  
                       ), 
                       
-                      conditionalPanel(     
-                        condition = "input.dismodel == 'geometric'", 
-                        numericInput("p", "parameter p in Geometric" , value = 0.5) 
-                      ), 
-                      numericInput("max", "upper limit for x" , value = 5),  
-                      sliderInput("s", "number of simulated data" ,min=1, max=1000, value = 10),
+                      
+                      
+                      
+                      
                       conditionalPanel( 
-                        condition = "input.dismodel == 'binomial'", 
-                        numericInput("j1", "j for Bin" , value = 1) 
+                        
+                        condition = "input.dataset == 'iris'", 
+                        
+                        selectInput("column1", "Select Column:",  
+                                    
+                                    choices=colnames(iris)) 
+                        
+                        
+                        
                       ), 
+                      
+                      
+                      
                       conditionalPanel( 
-                        condition = "input.dismodel == 'poisson'", 
-                        numericInput("j2", "j for Poisson" , value = 1) 
+                        
+                        condition = "input.dataset == 'USArrests'", 
+                        
+                        selectInput("column2", "Select Column:",  
+                                    
+                                    choices=colnames(USArrests)) 
+                        
+                        
+                        
                       ), 
+                      
+                      
+                      
+                      
+                      
+                      sliderInput("s", "number of simulated data" ,min=1, max=1000, value = 10), 
+                      
+                      
+                      
                       conditionalPanel( 
-                        condition = "input.dismodel == 'geometric'", 
-                        numericInput("j3", "j for geometric" , value = 1) 
+                        
+                        condition = "input.conmodel == 'uniform'" 
+                        
+                        ### Intentionally left as empty for student exercise  
+                        
                       ) 
                       
                       
-                      
-                      
-                      
-                    ),  
+                    ), 
+                    
+                    
                     mainPanel(  
-                      plotOutput("histogram"),  
-                      tableOutput('tab')  
-                    )                  
+                      
+                      #tableOutput('prob'),
+                      
+                      DT::dataTableOutput('summary'), 
+                      verbatimTextOutput("prob"),
+                      
+                      #verbatimTextOutput("prt") 
+                      
+                    )          
            )
+
+
+##############CONTINUOUS PROBABILITY########################################################
 )
