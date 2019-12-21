@@ -58,18 +58,19 @@ function(input, output, session) {
   
   output$summary = DT::renderDataTable({ 
     
-    if (input$dataset =='iris') { dispdata <- iris } 
+    if (input$dataset =='Seatbelts') { dispdata <- Seatbelts } 
     
     else if (input$dataset =='USArrests') { dispdata <- USArrests } 
     
-    else if (input$dataset =='OtherData' && is.null(input$file2) ) 
-    {
-      output$ErrorMessage <- renderPrint("Kindly select the data from the descriptive tab to populate here") } else
-      {
-        dispdata <- rendingStuff()
-      }
-    
-    
+    # else if (input$dataset =='OtherData' && is.null(input$file2) ) 
+    # {
+    #   output$ErrorMessage <- renderPrint("Kindly select the data from the descriptive tab to populate here") } 
+    # 
+    # else
+    # 
+    #     {
+    #     dispdata <- rendingStuff()
+    #   }
     
     
     # print(dispdata)
@@ -91,25 +92,30 @@ function(input, output, session) {
   
   output$prob <- renderPrint({ 
     
-    if (input$dataset =='iris') { 
+    if (input$dataset =='Seatbelts') { 
       
       print(input$column1)   
       
-      if (input$column1 == 'Sepal.Length') { x <- iris$Sepal.Length} 
+      if (input$column1 == 'DriversKilled') { x <- data.frame(Seatbelts)$DriversKilled} 
       
-      if (input$column1 == 'Sepal.Width') { x <- iris$Sepal.Width} 
+      if (input$column1 == 'drivers') { x <- data.frame(Seatbelts)$drivers} 
       
-      if (input$column1 == 'Petal.Length') { x <- iris$Petal.Length} 
+      if (input$column1 == 'front') { x <- data.frame(Seatbelts)$front} 
       
-      if (input$column1 == 'Petal.Width') { x <- iris$Petal.Width} 
+      if (input$column1 == 'rear') { x <- data.frame(Seatbelts)$rear} 
+      
+      if (input$column1 == 'kms') { x <- data.frame(Seatbelts)$kms}
+      
+      if (input$column1 == 'PetrolPrice') { x <- data.frame(Seatbelts)$PetrolPrice}
+      
+      if (input$column1 == 'VanKilled') { x <- data.frame(Seatbelts)$VanKilled}
       
       
-      
-      if (input$column1 == 'Species')  
+      if (input$column1 == 'law')  
         
       {  
         
-        print('Species is not the right column to predict') 
+        print('law is not the right column to predict') 
         
         x <- 0  
         
@@ -117,19 +123,19 @@ function(input, output, session) {
       
     } 
     
-    if (input$dataset =='USArrests') { 
-      
-      print(input$column2) 
-      
-      if (input$column2 == 'Murder') { x <- USArrests$Murder} 
-      
-      if (input$column2 == 'Assault') { x <- USArrests$Assault} 
-      
-      if (input$column2 == 'UrbanPop') { x <- USArrests$UrbanPop} 
-      
-      if (input$column2 == 'Rape') { x <- USArrests$Rape} 
-      
-    } 
+    if (input$dataset =='USArrests') {
+
+      print(input$column2)
+
+      if (input$column2 == 'Murder') { x <- USArrests$Murder}
+
+      if (input$column2 == 'Assault') { x <- USArrests$Assault}
+
+      if (input$column2 == 'UrbanPop') { x <- USArrests$UrbanPop}
+
+      if (input$column2 == 'Rape') { x <- USArrests$Rape}
+
+    }
     
     
     
@@ -141,14 +147,40 @@ function(input, output, session) {
       
     {  
       
-      print(mean(rnorm(input$s,mean(x), sd(x)))) 
+      # output$prob <- renderPrint({
+      #   
+      #   mean(rnorm(input$s,mean(x), sd(x)))
+      # })
+      
+      d <- (mean(rnorm(input$s,mean(x), sd(x))))
+      print(d)
+      output$histogram <- renderPlot({
+
+        plot(d, main="Kernel Density of generated data")
+        
+        # hist(d, main="Random draws from Std Normal", cex.axis=.8, xlim=c(-4,4))
+        
+        
+
+
+      })
+      
+      
+      # d <- (mean(rnorm(input$s,mean(x), sd(x))))
+      # print(d)
+      # output$tab <- renderPlot({
+      #   
+      #   polygon(d, col="red", border="blue")
+      #   
+      # })
+      
       
     } 
     
+
     
     
     # exponential 
-    
     
     
     if (input$conmodel == 'exponential')  
@@ -160,16 +192,12 @@ function(input, output, session) {
     } 
     
     
-    
-    
-    
-    
-    
-    
-    
-    if (input$conmodel == 'uniform') { 
+    if (input$conmodel == 'uniform') 
       
-      print("Under Construction") 
+      {
+      
+      
+      print(mean(runif(input$s, min = 0, max = 1))) 
       
       
       

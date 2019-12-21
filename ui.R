@@ -23,35 +23,25 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                         # Input: Select separator ----
                         radioButtons("sep", "Separator",
                                      choices = c(Comma = ",",
-                                                 Semicolon = ";",
                                                  Tab = "\t"),
                                      selected = ","),
                         
                         # Input: Select quotes ----
                         radioButtons("quote", "Quote",
-                                     choices = c(None = "",
-                                                 "Double Quote" = '"',
-                                                 "Single Quote" = "'"),
+                                     choices = c("Double Quote" = "",
+                                                 "None" = '"'),
                                      selected = '"'),
                         
                         # Horizontal line ----
                         tags$hr(),
                         
-                        # Input: Select number of rows to display ----
-                        radioButtons("disp", "Display",
-                                     choices = c(Head = "head",
-                                                 All = "all"),
-                                     selected = "head")
                       ),
                       
                       mainPanel(
                         
-                        # Output: Data file ----
-                        # tableOutput("c2"),
                         DT::dataTableOutput('ex1'),
                         verbatimTextOutput("c2summary")
                       
-                        
                       )
                     )
            ),
@@ -71,7 +61,7 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                               
                                               "Uniform" = "uniform"), 
                                   
-                                  selected = "exponential" 
+                                  selected = "normal" 
                                   
                       ), 
                       
@@ -79,33 +69,28 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       
                       selectInput("dataset", "Select Data", 
                                   
-                                  choices = c("IRIS" = "iris", 
+                                  choices = c("Seat Belts" = "Seatbelts", 
                                               
-                                              "USArrests" = "USArrests",
-                                              
-                                              "Other Data" = "OtherData"
-                                              
+                                              "USArrests" = "USArrests"
+           
                                               
                                   ), 
                                   
-                                  selected = "IRIS" 
+                                  selected = "Seatbelts" 
                                   
                       ), 
                       
-                      
-                      
-                      
+
                       
                       conditionalPanel( 
                         
-                        condition = "input.dataset == 'iris'", 
+                        condition = "input.dataset == 'Seatbelts'", 
                         
                         selectInput("column1", "Select Column:",  
                                     
-                                    choices=colnames(iris)) 
+                                    choices=colnames(Seatbelts)) 
                         
-                        
-                        
+
                       ), 
                       
                       
@@ -118,37 +103,35 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                     
                                     choices=colnames(USArrests)) 
                         
-                        
-                        
                       ), 
-                      
-                      
-                      
-                      
+
                       
                       sliderInput("s", "number of simulated data" ,min=1, max=1000, value = 10), 
                       
                       
-                      
-                      conditionalPanel( 
-                        
-                        condition = "input.conmodel == 'uniform'" 
-                        
-                        ### Intentionally left as empty for student exercise  
-                        
-                      ) 
-                      
-                      
+                      conditionalPanel(
+
+                        condition = "input.conmodel == 'uniform'"
+
+                        ### Intentionally left as empty for student exercise
+
+                      )
+
                     ), 
                     
                     
                     mainPanel(  
                       
-                      #tableOutput('prob'),
                       
                       DT::dataTableOutput('summary'), 
                       verbatimTextOutput("prob"),
-                      verbatimTextOutput("ErrorMessage")
+                      verbatimTextOutput("ErrorMessage"),
+                      
+                      ####PLOT############################
+                      
+                      plotOutput("histogram"),  
+                      
+                      tableOutput("tab")  
                       
                       #verbatimTextOutput("prt") 
                       
@@ -156,5 +139,107 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
            )
 
 
-##############CONTINUOUS PROBABILITY########################################################
+############## MACHINE LEARNING ########################################################
+
+
+
+# tabPanel("Machine Learning",
+#          
+#          sidebarPanel( 
+#            
+#            selectInput("conmodel", "Select Model", 
+#                        
+#                        choices = c("Logistic Regression" = "LogisticRegression", 
+#                                    
+#                                    "Naive Baye's" = "NaiveBayes", 
+#                                    
+#                                    "K - Nearest Neighbours" = "KNearestNeighbours"), 
+#                        
+#                        selected = "LogisticRegression" 
+#                        
+#            ), 
+#            
+#            
+#
+#            selectInput("dataset", "Select Data", 
+#                        
+#                        choices = c("IRIS" = "iris", 
+#                                    
+#                                    "USArrests" = "USArrests",
+#                                    
+#                                    "Other Data" = "OtherData"
+#                                    
+#                                    
+#                        ), 
+#                        
+#                        selected = "IRIS" 
+#                        
+#            ), 
+#            
+#            
+#            
+#            
+#            
+#            conditionalPanel( 
+#              
+#              condition = "input.dataset == 'iris'", 
+#              
+#              selectInput("column1", "Select Column:",  
+#                          
+#                          choices=colnames(iris)) 
+#              
+#              
+#              
+#            ), 
+#            
+#            
+#            
+#            conditionalPanel( 
+#              
+#              condition = "input.dataset == 'USArrests'", 
+#              
+#              selectInput("column2", "Select Column:",  
+#                          
+#                          choices=colnames(USArrests)) 
+#              
+#              
+#              
+#            ), 
+#            
+#            
+#            
+#            
+#            
+#            sliderInput("s", "number of simulated data" ,min=1, max=1000, value = 10), 
+#            
+#            
+#            
+#            conditionalPanel( 
+#              
+#              condition = "input.conmodel == 'uniform'" 
+#              
+#              ### Intentionally left as empty for student exercise  
+#              
+#            ) 
+#            
+#            
+#          ), 
+#          
+#          
+#          mainPanel(  
+#            
+#            #tableOutput('prob'),
+#            
+#            DT::dataTableOutput('summary'), 
+#            verbatimTextOutput("prob"),
+#            verbatimTextOutput("ErrorMessage")
+#            
+#            #verbatimTextOutput("prt") 
+#            
+#          )   
+#          
+# #########################Final Closure############################33
+# 
+# )
+
 )
