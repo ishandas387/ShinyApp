@@ -13,25 +13,20 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                   multiple = FALSE,
                                   accept = c("text/csv","text/comma-separated-values,text/plain",".csv")),
                         
-                        
                         # Horizontal line ----
                         tags$hr(),
-                        
                         # Input: Checkbox if file has header ----
                         checkboxInput("header", "Header", TRUE),
-                        
                         # Input: Select separator ----
                         radioButtons("sep", "Separator",
                                      choices = c(Comma = ",",
                                                  Tab = "\t"),
                                      selected = ","),
-                        
                         # Input: Select quotes ----
                         radioButtons("quote", "Quote",
                                      choices = c("Double Quote" = "",
                                                  "None" = '"'),
                                      selected = '"'),
-                        
                         # Horizontal line ----
                         tags$hr(),
                         
@@ -98,9 +93,7 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       conditionalPanel( 
                         
                         condition = "input.dataset == 'USArrests'", 
-                        
                         selectInput("column2", "Select Column:",  
-                                    
                                     choices=colnames(USArrests)) 
                         
                       ), 
@@ -121,8 +114,6 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                     
                     
                     mainPanel(  
-                      
-                      
                       DT::dataTableOutput('summary'), 
                       verbatimTextOutput("prob"),
                       verbatimTextOutput("ErrorMessage"),
@@ -136,6 +127,24 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       #verbatimTextOutput("prt") 
                       
                     )          
+           ),
+           tabPanel("Machine Learning",
+                    sidebarPanel( 
+                          selectInput("mlmodel", "Select Model", 
+                                    
+                                      choices = c("Naive Bayes" = "NB", 
+                                                  "SVM" = "SVM", 
+                                                  "MLR" = "MLR",
+                                                  "ALL 3 with monte carlo" = "ALL"), 
+                                      selected = "NB" 
+                                     )
+                    ),
+                            mainPanel(
+                              h4("PimaIndianDiabetic2 dataset"),
+                              DT::dataTableOutput('pima'),
+                              h4("Applying Classification models on PimaIndianDiabetic2 dataset"),
+                              verbatimTextOutput('ml')
+                            )
            )
 
 

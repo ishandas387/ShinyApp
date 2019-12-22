@@ -1,6 +1,39 @@
 library(shiny)
 library(pastecs)
 library(data.table)
+
+returnPimaIndianDataset <- function(){
+      data("PimaIndiansDiabetes2", package = "mlbench")
+      PimaIndiansDiabetes2 <- na.omit(PimaIndiansDiabetes2)
+      dataset=PimaIndiansDiabetes2
+      return(dataset)  
+}
+
+runNaiveBayesForTheDataset <- function (trainset,testset,actual){
+              nb_model <- naiveBayes(diabetes~ ., data=trainset) 
+              pred_nb= predict(nb_model, testset) 
+              pred_nb
+              #confusionMatrix(pred_nb,actual)
+              accuracy_nb=mean(pred_nb==actual)
+              return (accuracy_nb)
+}
+
+runSvmForTheDataSet <- function(trainset,testset,actual){
+
+      svm_model <- svm(diabetes~ ., data=trainset, method="nu-classification", kernel="linear") 
+      pred_svm= predict(svm_model, testset, type='response') 
+      accuracy_svm=mean(pred_svm==actual) 
+      return(accuracy_svm)
+}
+
+runMultiNomialLogisticRegrsForDataset <- function(trainset,testset,actual){
+
+        mlr_model <- multinom(diabetes~ ., data=trainset) 
+        pred_mlr= predict(mlr_model, testset) 
+        accuracy_mlr=mean(pred_mlr==actual) 
+        return(accuracy_mlr)
+}
+
 function(input, output, session) {
   
 #################Generate a summary of the dataset#############################
@@ -77,6 +110,9 @@ function(input, output, session) {
     
     DT::datatable(data.frame(dispdata), options = list(lengthChange = TRUE)) 
   }) 
+   output$pima = DT::renderDataTable({ 
+    DT::datatable(returnPimaIndianDataset(), options = list(lengthChange = TRUE))
+   })
   
   
   # output$prt = renderPrint({ 
@@ -89,7 +125,52 @@ function(input, output, session) {
   #   
   # })   
   
+  output$ml <- renderPrint({
+
+      library(e1071) 
+      library(nnet) 
+      dataset=returnPimaIndianDataset()  
+      n=nrow(dataset) 
+      indexes = sample(n,n*(80/100)) 
+      trainset = dataset[indexes,] 
+      testset = dataset[-indexes,] 
+      actual=testset$diabetes
+      acc=c(SVM =0,NB= 0, MLR =0); 
+      mc=100 
+      if (input$mlmodel =='NB') { 
+             accuracy_nb =runNaiveBayesForTheDataset(trainset,testset,actual)
+              print(accuracy_nb)
+      }
+      else if(input$mlmodel =='SVM'){
+         accuracy_svm = runSvmForTheDataSet(trainset,testset,actual)
+          print(accuracy_svm)
+      }
+      else if(input$mlmodel =='MLR'){
+         accuracy_mlr = runMultiNomialLogisticRegrsForDataset(trainset,testset,actual)
+          print(accuracy_mlr)
+      }
+      else{
+
+          for(i in 1:mc){ 
   
+            n=nrow(dataset) 
+            indexes = sample(n,n*(80/100)) 
+            trainset = dataset[indexes,] 
+            testset = dataset[-indexes,] 
+            #build model linear kernel and C-classification (soft margin) with default cost (C=1) 
+            accuracy_nb =runNaiveBayesForTheDataset(trainset,testset,actual)
+            # NB 
+            accuracy_svm = runSvmForTheDataSet(trainset,testset,actual)
+            # Multinomial Logistic reg 
+            accuracy_mlr = runMultiNomialLogisticRegrsForDataset(trainset,testset,actual)
+            vect_accuracy=c(accuracy_svm,accuracy_nb,accuracy_mlr) 
+            acc=acc+(1/mc)*vect_accuracy 
+            } 
+        plotdf <- as.data.frame(acc) 
+        print(plotdf)
+      }
+
+  })
   output$prob <- renderPrint({ 
     
     if (input$dataset =='Seatbelts') { 
