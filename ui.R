@@ -100,18 +100,12 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
 
                       
                       sliderInput("s", "number of simulated data" ,min=1, max=1000, value = 10), 
-                      
-                      
                       conditionalPanel(
 
                         condition = "input.conmodel == 'uniform'"
-
-                        ### Intentionally left as empty for student exercise
-
                       )
 
                     ), 
-                    
                     
                     mainPanel(  
                       DT::dataTableOutput('summary'), 
@@ -119,11 +113,8 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       verbatimTextOutput("ErrorMessage"),
                       
                       ####PLOT############################
-                      
                       plotOutput("histogram"),  
-                      
                       tableOutput("tab")  
-                      
                       #verbatimTextOutput("prt") 
                       
                     )          
@@ -140,10 +131,10 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                      )
                     ),
                             mainPanel(
-                              h4("PimaIndianDiabetic2 dataset"),
-                              DT::dataTableOutput('pima'),
                               h4("Applying Classification models on PimaIndianDiabetic2 dataset"),
                               verbatimTextOutput('ml')
+                              h4("PimaIndianDiabetic2 dataset"),
+                              DT::dataTableOutput('pima'),
                             )
            )
 

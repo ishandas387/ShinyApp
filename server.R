@@ -19,7 +19,7 @@ runNaiveBayesForTheDataset <- function (trainset,testset,actual){
 }
 
 runSvmForTheDataSet <- function(trainset,testset,actual){
-
+      #build model linear kernel and C-classification (soft margin) with default cost (C=1) 
       svm_model <- svm(diabetes~ ., data=trainset, method="nu-classification", kernel="linear") 
       pred_svm= predict(svm_model, testset, type='response') 
       accuracy_svm=mean(pred_svm==actual) 
@@ -88,42 +88,15 @@ function(input, output, session) {
 
   #########################CONTINUOUS PROBABILITY###################################
   
-  
   output$summary = DT::renderDataTable({ 
-    
+
     if (input$dataset =='Seatbelts') { dispdata <- Seatbelts } 
-    
     else if (input$dataset =='USArrests') { dispdata <- USArrests } 
-    
-    # else if (input$dataset =='OtherData' && is.null(input$file2) ) 
-    # {
-    #   output$ErrorMessage <- renderPrint("Kindly select the data from the descriptive tab to populate here") } 
-    # 
-    # else
-    # 
-    #     {
-    #     dispdata <- rendingStuff()
-    #   }
-    
-    
-    # print(dispdata)
-    
     DT::datatable(data.frame(dispdata), options = list(lengthChange = TRUE)) 
   }) 
    output$pima = DT::renderDataTable({ 
     DT::datatable(returnPimaIndianDataset(), options = list(lengthChange = TRUE))
    })
-  
-  
-  # output$prt = renderPrint({ 
-  #   
-  #   if (input$dataset =='iris') { dispdata <- iris } 
-  #   
-  #   if (input$dataset =='USArrests') { dispdata <- USArrests } 
-  #   
-  #   print(dispdata) 
-  #   
-  # })   
   
   output$ml <- renderPrint({
 
@@ -150,16 +123,14 @@ function(input, output, session) {
           print(accuracy_mlr)
       }
       else{
-
           for(i in 1:mc){ 
-  
             n=nrow(dataset) 
             indexes = sample(n,n*(80/100)) 
             trainset = dataset[indexes,] 
             testset = dataset[-indexes,] 
-            #build model linear kernel and C-classification (soft margin) with default cost (C=1) 
-            accuracy_nb =runNaiveBayesForTheDataset(trainset,testset,actual)
             # NB 
+            accuracy_nb =runNaiveBayesForTheDataset(trainset,testset,actual)
+            #SVM
             accuracy_svm = runSvmForTheDataSet(trainset,testset,actual)
             # Multinomial Logistic reg 
             accuracy_mlr = runMultiNomialLogisticRegrsForDataset(trainset,testset,actual)
@@ -174,32 +145,19 @@ function(input, output, session) {
   output$prob <- renderPrint({ 
     
     if (input$dataset =='Seatbelts') { 
-      
       print(input$column1)   
-      
       if (input$column1 == 'DriversKilled') { x <- data.frame(Seatbelts)$DriversKilled} 
-      
       if (input$column1 == 'drivers') { x <- data.frame(Seatbelts)$drivers} 
-      
       if (input$column1 == 'front') { x <- data.frame(Seatbelts)$front} 
-      
       if (input$column1 == 'rear') { x <- data.frame(Seatbelts)$rear} 
-      
       if (input$column1 == 'kms') { x <- data.frame(Seatbelts)$kms}
-      
       if (input$column1 == 'PetrolPrice') { x <- data.frame(Seatbelts)$PetrolPrice}
-      
       if (input$column1 == 'VanKilled') { x <- data.frame(Seatbelts)$VanKilled}
       
-      
       if (input$column1 == 'law')  
-        
       {  
-        
         print('law is not the right column to predict') 
-        
         x <- 0  
-        
       }     
       
     } 
