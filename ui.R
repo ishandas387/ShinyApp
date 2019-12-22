@@ -51,26 +51,15 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       selectInput("conmodel", "Select Model", 
                                   
                                   choices = c("Normal" = "normal", 
-                                              
                                               "Exponential" = "exponential", 
-                                              
                                               "Uniform" = "uniform"), 
-                                  
                                   selected = "normal" 
                                   
                       ), 
-                      
-                      
-                      
                       selectInput("dataset", "Select Data", 
-                                  
                                   choices = c("Seat Belts" = "Seatbelts", 
-                                              
                                               "USArrests" = "USArrests"
-           
-                                              
                                   ), 
-                                  
                                   selected = "Seatbelts" 
                                   
                       ), 
@@ -78,9 +67,7 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       conditionalPanel( 
                         
                         condition = "input.dataset == 'Seatbelts'", 
-                        
                         selectInput("column1", "Select Column:",  
-                                    
                                     choices=colnames(Seatbelts)) 
                         
 
@@ -101,7 +88,6 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       )
 
                     ), 
-                    
                     mainPanel(  
                       DT::dataTableOutput('summary'), 
                       verbatimTextOutput("prob"),
@@ -114,6 +100,8 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       
                     )          
            ),
+ ##############CONTINUOUS PROBABILITY########################################################
+  
            tabPanel("Machine Learning",
                     sidebarPanel( 
                           selectInput("mlmodel", "Select Model", 
@@ -127,9 +115,9 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                     ),
                             mainPanel(
                               h4("Applying Classification models on PimaIndianDiabetic2 dataset"),
-                              verbatimTextOutput('ml')
+                              verbatimTextOutput('ml'),
                               h4("PimaIndianDiabetic2 dataset"),
-                              DT::dataTableOutput('pima'),
+                              DT::dataTableOutput('pima')
                             )
            )
 )
