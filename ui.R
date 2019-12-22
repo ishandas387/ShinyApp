@@ -111,7 +111,11 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                                   "MLR" = "MLR",
                                                   "ALL 3 with monte carlo" = "ALL"), 
                                       selected = "NB" 
-                                     )
+                                     ),
+                             mainPanel(
+                               plotOutput("ctx") 
+                             )        
+
                     ),
                             mainPanel(
                               h4("Applying Classification models on PimaIndianDiabetic2 dataset"),
