@@ -1,7 +1,11 @@
 library(shiny)
 library(pastecs)
 library(data.table)
+library(caret)
+library(e1071) 
+library(nnet) 
 
+isMontecarlo = FALSE
 returnPimaIndianDataset <- function(){
       data("PimaIndiansDiabetes2", package = "mlbench")
       PimaIndiansDiabetes2 <- na.omit(PimaIndiansDiabetes2)
@@ -14,6 +18,10 @@ runNaiveBayesForTheDataset <- function (trainset,testset,actual){
               pred_nb= predict(nb_model, testset) 
               pred_nb
               #confusionMatrix(pred_nb,actual)
+                    if(!isMontecarlo){
+                          #get the confussion matrix
+                          print(confusionMatrix(pred_nb,actual))
+                          }
               accuracy_nb=mean(pred_nb==actual)
               return (accuracy_nb)
 }
@@ -100,8 +108,7 @@ function(input, output, session) {
   
   output$ml <- renderPrint({
 
-      library(e1071) 
-      library(nnet) 
+      
       dataset=returnPimaIndianDataset()  
       n=nrow(dataset) 
       indexes = sample(n,n*(80/100)) 
@@ -111,6 +118,7 @@ function(input, output, session) {
       acc=c(SVM =0,NB= 0, MLR =0); 
       mc=100 
       if (input$mlmodel =='NB') { 
+              set.seed(120)
              accuracy_nb =runNaiveBayesForTheDataset(trainset,testset,actual)
               print(accuracy_nb)
       }
@@ -123,6 +131,7 @@ function(input, output, session) {
           print(accuracy_mlr)
       }
       else{
+          isMontecarlo = TRUE
           for(i in 1:mc){ 
             n=nrow(dataset) 
             indexes = sample(n,n*(80/100)) 
