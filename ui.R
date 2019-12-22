@@ -75,8 +75,6 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                   
                       ), 
                       
-
-                      
                       conditionalPanel( 
                         
                         condition = "input.dataset == 'Seatbelts'", 
@@ -87,8 +85,6 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                         
 
                       ), 
-                      
-                      
                       
                       conditionalPanel( 
                         
@@ -101,7 +97,6 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       
                       sliderInput("s", "number of simulated data" ,min=1, max=1000, value = 10), 
                       conditionalPanel(
-
                         condition = "input.conmodel == 'uniform'"
                       )
 
@@ -137,109 +132,4 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                               DT::dataTableOutput('pima'),
                             )
            )
-
-
-############## MACHINE LEARNING ########################################################
-
-
-
-# tabPanel("Machine Learning",
-#          
-#          sidebarPanel( 
-#            
-#            selectInput("conmodel", "Select Model", 
-#                        
-#                        choices = c("Logistic Regression" = "LogisticRegression", 
-#                                    
-#                                    "Naive Baye's" = "NaiveBayes", 
-#                                    
-#                                    "K - Nearest Neighbours" = "KNearestNeighbours"), 
-#                        
-#                        selected = "LogisticRegression" 
-#                        
-#            ), 
-#            
-#            
-#
-#            selectInput("dataset", "Select Data", 
-#                        
-#                        choices = c("IRIS" = "iris", 
-#                                    
-#                                    "USArrests" = "USArrests",
-#                                    
-#                                    "Other Data" = "OtherData"
-#                                    
-#                                    
-#                        ), 
-#                        
-#                        selected = "IRIS" 
-#                        
-#            ), 
-#            
-#            
-#            
-#            
-#            
-#            conditionalPanel( 
-#              
-#              condition = "input.dataset == 'iris'", 
-#              
-#              selectInput("column1", "Select Column:",  
-#                          
-#                          choices=colnames(iris)) 
-#              
-#              
-#              
-#            ), 
-#            
-#            
-#            
-#            conditionalPanel( 
-#              
-#              condition = "input.dataset == 'USArrests'", 
-#              
-#              selectInput("column2", "Select Column:",  
-#                          
-#                          choices=colnames(USArrests)) 
-#              
-#              
-#              
-#            ), 
-#            
-#            
-#            
-#            
-#            
-#            sliderInput("s", "number of simulated data" ,min=1, max=1000, value = 10), 
-#            
-#            
-#            
-#            conditionalPanel( 
-#              
-#              condition = "input.conmodel == 'uniform'" 
-#              
-#              ### Intentionally left as empty for student exercise  
-#              
-#            ) 
-#            
-#            
-#          ), 
-#          
-#          
-#          mainPanel(  
-#            
-#            #tableOutput('prob'),
-#            
-#            DT::dataTableOutput('summary'), 
-#            verbatimTextOutput("prob"),
-#            verbatimTextOutput("ErrorMessage")
-#            
-#            #verbatimTextOutput("prt") 
-#            
-#          )   
-#          
-# #########################Final Closure############################33
-# 
-# )
-
 )
