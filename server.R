@@ -135,7 +135,7 @@ function(input, output, session) {
     return(df)
   })
   
-  #####################Converting into data table########################
+  #####################DISCRETE PROBABILITY########################
   # output$c2 <- renderTable({
   #   rendingStuff()})
   
@@ -144,7 +144,7 @@ function(input, output, session) {
       summary(rendingStuff())
   })
   
-  ####################################################
+  ######################################################################
   output$ex1 <- DT::renderDataTable(
     DT::datatable(rendingStuff(), options = list(pageLength = 10))
   )
