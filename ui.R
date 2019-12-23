@@ -3,7 +3,7 @@ library(markdown)
 
 navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Machine Learning",
            
-##############DESCRIPTIVE STATISTICS########################################################
+############## DESCRIPTIVE STATISTICS ########################################################
 
            tabPanel("Descriptive Statistics",
                     sidebarLayout(
@@ -35,7 +35,8 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       mainPanel(
                         
                         DT::dataTableOutput('ex1'),
-                        verbatimTextOutput("c2summary")
+                        verbatimTextOutput("c2summary"),
+                        plotOutput(outputId = 'ex2')
                       
                       )
                     )
@@ -189,8 +190,7 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                       
                       ####PLOT############################
                       plotOutput("histogram"),  
-                      tableOutput("tab")  
-                      #verbatimTextOutput("prt") 
+                      #tableOutput("tab")
                       
                     )          
            ),

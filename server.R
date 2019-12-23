@@ -5,6 +5,9 @@ library(caret)
 library(e1071) 
 library(nnet) 
 
+
+############################## Functions ################################################
+
 isMontecarlo = FALSE
 returnPimaIndianDataset <- function(){
       data("PimaIndiansDiabetes2", package = "mlbench")
@@ -107,7 +110,7 @@ draw_confusion_matrix <- function(cmtrx, headerName) {
 
 function(input, output, session) {
   
-#################Generate a summary of the dataset#############################
+################# Returning Data Frame #############################
 
   rendingStuff <- reactive({
     
@@ -133,36 +136,37 @@ function(input, output, session) {
       }
     )
     
-    # if(input$disp == "head") {
-    #   return(head(df))
-    # }
-    # else 
-    #   {
-    #   return(df)
-    #}
     return(df)
   })
   
-  #####################DISCRETE PROBABILITY########################
-  # output$c2 <- renderTable({
-  #   rendingStuff()})
   
-  #####################Converting into data table########################
+  ##################### Summary #################################
+  
   output$c2summary <- renderPrint({
       summary(rendingStuff())
   })
   
-  ######################################################################
+  ###################Plot Data Table ############################
+  
+  output$ex2 <- renderPlot({
+
+     x  <- rendingStuff()
+    # bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    #
+    hist(x$Score, col = "#75AADB", border = "white",
+         xlab = "Waiting time to next eruption (in mins)",
+         main = "Histogram of waiting times")
+
+  })
+
+  ############################# Convert into Datatable #########################################
+  
   output$ex1 <- DT::renderDataTable(
     DT::datatable(rendingStuff(), options = list(pageLength = 10))
   )
 
-  output$summary = DT::renderDataTable({ 
-
-    if (input$dataset =='Seatbelts') { dispdata <- Seatbelts } 
-    else if (input$dataset =='USArrests') { dispdata <- USArrests } 
-    DT::datatable(data.frame(dispdata), options = list(lengthChange = TRUE)) 
-  }) 
+  
+  ######################### MACHINE LEARNING ###################################
    output$pima = DT::renderDataTable({ 
     DT::datatable(returnPimaIndianDataset(), options = list(lengthChange = TRUE))
    })
@@ -256,9 +260,19 @@ output$yaxis <- renderUI({
   })
 
 
-   #########################CONTINUOUS PROBABILITY###################################
   
- 
+  
+  
+#################################### CONTINUOUS PROBABILITY #######################################
+
+  
+  output$summary = DT::renderDataTable({ 
+    
+    if (input$dataset =='Seatbelts') { dispdata <- Seatbelts } 
+    else if (input$dataset =='USArrests') { dispdata <- USArrests } 
+    DT::datatable(data.frame(dispdata), options = list(lengthChange = TRUE)) 
+  }) 
+    
   output$prob <- renderPrint({ 
     
     if (input$dataset =='Seatbelts') { 
@@ -297,8 +311,6 @@ output$yaxis <- renderUI({
     
     # normal 
     
-    
-    
     if (input$conmodel == 'normal')  
       
     {  
@@ -314,7 +326,7 @@ output$yaxis <- renderUI({
 
         plot(d, main="Kernel Density of generated data")
         
-        # hist(d, main="Random draws from Std Normal", cex.axis=.8, xlim=c(-4,4))
+        #hist(d, main="Random draws from Std Normal", cex.axis=.8, xlim=c(-4,4))
         
         
 
@@ -332,9 +344,6 @@ output$yaxis <- renderUI({
       
       
     } 
-    
-
-    
     
     # exponential 
     
