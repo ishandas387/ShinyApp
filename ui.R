@@ -42,8 +42,9 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                     )
            ),
 
+############## DISCRETE ########################################################
 
-tabPanel("Discrete",
+tabPanel("Discrete Random Variables",
 sidebarLayout(
         sidebarPanel(
                 selectInput(
@@ -120,7 +121,7 @@ sidebarLayout(
             
         ),
          mainPanel(  
-          plotOutput("discretePlot"),  
+          plotOutput("discretehistogram"),  
             
             tableOutput('discreteTab') 
             
