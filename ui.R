@@ -29,7 +29,7 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                      selected = '"'),
                         # Horizontal line ----
                         tags$hr(),
-                        helpText("Hist"),
+                        #helpText("Hist"),
                         uiOutput("histogramaxis")
                       ),
                       
@@ -133,7 +133,7 @@ sidebarLayout(
 
 ##############CONTINUOUS PROBABILITY########################################################
 
-           tabPanel("Continuous Probability Model",
+           tabPanel("Continuous Probability",
                     
                     sidebarPanel( 
                       
@@ -188,6 +188,8 @@ sidebarLayout(
                       
                     )          
            ),
+
+
  ##############MACHINE LEARNING########################################################
   
            tabPanel("Machine Learning",
@@ -214,5 +216,28 @@ sidebarLayout(
                               h4("PimaIndianDiabetic2 dataset"),
                               DT::dataTableOutput('pima')
                             )
+           ),
+
+
+################################### TEAM DETAILS #####################################################33
+
+
+tabPanel("Team",
+         
+         sidebarPanel( 
+           
+           titlePanel("MSc.Business Analytics"),
+
+           h5("1. ISHAN DAS - 10532854"),
+           h5("2. LUKOSE PANNAPARA - 10529675"),
+           h5("3. VARAD SANT - 10534368"),
+           h5("4. BHARAT SRINIVAS - 10532496")
+           
            )
+           
+         ), 
+         mainPanel(  
+           
+           
+         )          
 )

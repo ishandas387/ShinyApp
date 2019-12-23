@@ -150,7 +150,7 @@ function(input, output, session) {
       summary(ds)
   })
   
-  ###################Plot Data Table ############################
+  ################### Plot Data Table ############################
   
   output$desc_histogram <- renderPlot({
 
@@ -162,7 +162,7 @@ function(input, output, session) {
     print(x$columnName)
     hist(x[[columnName]], col = "#75AADB", border = "white",
          xlab = "Waiting time to next eruption (in mins)",
-         main = paste("Histogram of ",columnName,sep="-"))
+         main = paste("Histogram of ",columnName,sep=" - "))
 
   })
 
@@ -281,7 +281,7 @@ output$yaxis <- renderUI({
       
       plot(d, main="Kernel Density of generated data")  
       
-      polygon(d, col="red", border="blue") 
+      polygon(d, col="green", border="red") 
       
       x=0:input$n  
       
@@ -303,13 +303,13 @@ output$yaxis <- renderUI({
       
       tab=table(D)  
       
-      barplot(tab,col='blue')  
+      barplot(tab,col='purple')  
       
       x1=0:input$max  
       
       y1=dpois(x1,input$lam)  
       
-      plot(x1,y1,type='b')  
+      plot(x1,y1,type='b', col = 'purple')  
       
     } 
     
@@ -324,7 +324,7 @@ output$yaxis <- renderUI({
       
       tab=table(D)  
       
-      barplot(tab,col='blue')  
+      barplot(tab,col='red')  
       
       x2=0:input$max  
       
@@ -413,33 +413,13 @@ output$yaxis <- renderUI({
       
     {  
       
-      # output$prob <- renderPrint({
-      #   
-      #   mean(rnorm(input$s,mean(x), sd(x)))
-      # })
-      
       d <- (mean(rnorm(input$s,mean(x), sd(x))))
       print(d)
       output$histogram <- renderPlot({
 
-        plot(d, main="Kernel Density of generated data")
-        
-        #hist(d, main="Random draws from Std Normal", cex.axis=.8, xlim=c(-4,4))
-        
-        
-
+        plot(d, main="Kernel Density of generated data", col = 'red')
 
       })
-      
-      
-      # d <- (mean(rnorm(input$s,mean(x), sd(x))))
-      # print(d)
-      # output$tab <- renderPlot({
-      #   
-      #   polygon(d, col="red", border="blue")
-      #   
-      # })
-      
       
     } 
     
