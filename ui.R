@@ -29,14 +29,15 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                      selected = '"'),
                         # Horizontal line ----
                         tags$hr(),
-                        
+                        helpText("Hist"),
+                        uiOutput("histogramaxis")
                       ),
                       
                       mainPanel(
                         
                         DT::dataTableOutput('ex1'),
                         verbatimTextOutput("c2summary"),
-                        plotOutput(outputId = 'ex2')
+                        plotOutput(outputId = 'desc_histogram')
                       
                       )
                     )

@@ -143,19 +143,26 @@ function(input, output, session) {
   ##################### Summary #################################
   
   output$c2summary <- renderPrint({
-      summary(rendingStuff())
+      ds <-  rendingStuff()
+      output$histogramaxis <- renderUI({
+          selectInput("histogramaxis",  choices = colnames(ds), label = "Columns")
+        })
+      summary(ds)
   })
   
   ###################Plot Data Table ############################
   
-  output$ex2 <- renderPlot({
+  output$desc_histogram <- renderPlot({
 
      x  <- rendingStuff()
-    # bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    #
-    hist(x$Score, col = "#75AADB", border = "white",
+    columnName <- input$histogramaxis
+    print(columnName)
+    print(x[columnName])
+    print('*****')
+    print(x$columnName)
+    hist(x[[columnName]], col = "#75AADB", border = "white",
          xlab = "Waiting time to next eruption (in mins)",
-         main = "Histogram of waiting times")
+         main = paste("Histogram of ",columnName,sep="-"))
 
   })
 
