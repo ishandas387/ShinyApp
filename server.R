@@ -170,11 +170,10 @@ function(input, output, session) {
   output$scatterPima  <- renderPlot({
       dataset=returnPimaIndianDataset()  
       if(input$xaxis != input$yaxis && (input$xaxis !="diabetes" && input$yaxis !="diabetes" )){
-        print(input$xaxis)
-        l <-dataset[input$xaxis]
-        ggplot(dataset, aes(x = dataset[input$xaxis], y = dataset[input$yaxis])) +
+        ggplot(dataset, aes_string(x = input$xaxis, y = input$yaxis)) +
         geom_point(aes(color = factor(diabetes)))
       }else{
+        #textInput("defaultwarning", placeholder = "What year(s) does this survey cover?")
         ggplot(dataset, aes(x = glucose, y = age)) +
         geom_point(aes(color = factor(diabetes)))
       }
