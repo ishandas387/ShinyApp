@@ -14,6 +14,9 @@ returnPimaIndianDataset <- function(){
 }
 
 runNaiveBayesForTheDataset <- function (trainset,testset,actual){
+              if(!isMontecarlo){
+                set.seed(1000)
+              }
               nb_model <- naiveBayes(diabetes~ ., data=trainset) 
               pred_nb= predict(nb_model, testset) 
                ctx <- confusionMatrix(pred_nb,actual)
@@ -21,6 +24,9 @@ runNaiveBayesForTheDataset <- function (trainset,testset,actual){
 }
 
 runSvmForTheDataSet <- function(trainset,testset,actual){
+    if(!isMontecarlo){
+                set.seed(1000)
+              }
       #build model linear kernel and C-classification (soft margin) with default cost (C=1) 
       svm_model <- svm(diabetes~ ., data=trainset, method="nu-classification", kernel="linear") 
       pred_svm= predict(svm_model, testset, type='response') 
@@ -29,8 +35,10 @@ runSvmForTheDataSet <- function(trainset,testset,actual){
 }
 
 runMultiNomialLogisticRegrsForDataset <- function(trainset,testset,actual){
-
-        mlr_model <- multinom(diabetes~ ., data=trainset) 
+        if(!isMontecarlo){
+                set.seed(1000)
+              }
+        mlr_model <- multinom(diabetes~ ., data=trainset,trace=FALSE) 
         pred_mlr= predict(mlr_model, testset) 
         ctx_mlr <- confusionMatrix(pred_mlr,actual)
         return(ctx_mlr)
@@ -41,7 +49,7 @@ returnAccuracyFromConfusionMatrix <- function(confusionMatrix){
           return (round(accuracy*100,2))
 }
 
-draw_confusion_matrix <- function(cmtrx) {
+draw_confusion_matrix <- function(cmtrx, headerName) {
 
                 total <- sum(cmtrx$table)
                 res <- as.numeric(cmtrx$table)
@@ -60,7 +68,7 @@ draw_confusion_matrix <- function(cmtrx) {
                 layout(matrix(c(1,1,2)))
                 par(mar=c(2,2,2,2))
                 plot(c(100, 345), c(300, 450), type = "n", xlab="", ylab="", xaxt='n', yaxt='n')
-                title('CONFUSION MATRIX', cex.main=2)
+                title(paste('CONFUSION MATRIX ',headerName,sep=" "), cex.main=2)
                 # create the matrix
                 classes = colnames(cmtrx$table)
                 rect(150, 430, 240, 370, col=getColor("green", res[1]))
@@ -170,14 +178,14 @@ function(input, output, session) {
       trainset = dataset[indexes,] 
       testset = dataset[-indexes,] 
       actual=testset$diabetes
-      acc=c(SVM =0,NB= 0, MLR =0); 
+      accuracyMatrix=c(SVM =0,NB= 0, MLR =0); 
       mc=100 
       if (input$mlmodel =='NB') { 
               set.seed(120)
              ctx =runNaiveBayesForTheDataset(trainset,testset,actual)
              if(!isMontecarlo){
                output$ctx <- renderPlot({
-                 draw_confusion_matrix(ctx)
+                 draw_confusion_matrix(ctx, "-NB")
                })
              }
               print(returnAccuracyFromConfusionMatrix(ctx))
@@ -186,7 +194,7 @@ function(input, output, session) {
          ctx_svm = runSvmForTheDataSet(trainset,testset,actual)
           if(!isMontecarlo){
                output$ctx <- renderPlot({
-                 draw_confusion_matrix(ctx_svm)
+                 draw_confusion_matrix(ctx_svm,"-SVM")
                })
              }
            print(returnAccuracyFromConfusionMatrix(ctx_svm))
@@ -195,7 +203,7 @@ function(input, output, session) {
          ctx_svm_mlr = runMultiNomialLogisticRegrsForDataset(trainset,testset,actual)
          if(!isMontecarlo){
                output$ctx <- renderPlot({
-                 draw_confusion_matrix(ctx_svm_mlr)
+                 draw_confusion_matrix(ctx_svm_mlr,"-MLR")
                })
              }
             print(returnAccuracyFromConfusionMatrix(ctx_svm_mlr))
@@ -214,10 +222,15 @@ function(input, output, session) {
             # Multinomial Logistic reg 
             accuracy_mlr = returnAccuracyFromConfusionMatrix(runMultiNomialLogisticRegrsForDataset(trainset,testset,actual))
             vect_accuracy=c(accuracy_svm,accuracy_nb,accuracy_mlr) 
-            acc=acc+(1/mc)*vect_accuracy 
+            accuracyMatrix=accuracyMatrix+(1/mc)*vect_accuracy 
             } 
-        plotdf <- as.data.frame(acc) 
+        plotdf <- as.data.frame(accuracyMatrix) 
         print(plotdf)
+        output$ctx <- renderPlot({
+        p <-ggplot(plotdf, aes(accuracyMatrix, accuracyMatrix))
+        p +geom_bar(stat = "identity")
+
+        })
       }
 
   })

@@ -2,6 +2,7 @@
 
 library(e1071) 
 library(nnet) 
+library(ggplot2)
 data("PimaIndiansDiabetes2", package = "mlbench")
 
 "Data cleanup should include the following-
@@ -70,14 +71,19 @@ for(i in 1:mc){
   
 } 
 acc
+data.frame(as.list(acc))
 plotdf <- as.data.frame(acc) 
 plotdf
+p <-ggplot(acc, aes(x=seq_along(acc),y=acc))+
+geom_bar(stat="identity")+theme_minimal()
 
-ggplot(acc, aes(x=acc, y=acc, fill=acc)) +
-  geom_bar(stat="identity")+theme_minimal()
 
-plot(plotdf, acc,ylim=c(0.93,.98),col='blue', type='b') 
-
-lines(x, M[,2],col='red', type='b') 
-
-lines(x, M[,3],col='green', type='b') 
+# 
+  # ggplot(acc, aes(x=acc, y=acc, fill=acc)) +
+#   geom_bar(stat="identity")+theme_minimal()
+# 
+# plot(plotdf, acc,ylim=c(0.93,.98),col='blue', type='b')
+# 
+# lines(x, M[,2],col='red', type='b')
+# 
+# lines(x, M[,3],col='green', type='b')
