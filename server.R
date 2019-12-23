@@ -16,31 +16,86 @@ returnPimaIndianDataset <- function(){
 runNaiveBayesForTheDataset <- function (trainset,testset,actual){
               nb_model <- naiveBayes(diabetes~ ., data=trainset) 
               pred_nb= predict(nb_model, testset) 
-              pred_nb
-              #confusionMatrix(pred_nb,actual)
-                    if(!isMontecarlo){
-                          #get the confussion matrix
-                          print(confusionMatrix(pred_nb,actual))
-                          }
-              accuracy_nb=mean(pred_nb==actual)
-              return (accuracy_nb)
+               ctx <- confusionMatrix(pred_nb,actual)
+              return (ctx)
 }
 
 runSvmForTheDataSet <- function(trainset,testset,actual){
       #build model linear kernel and C-classification (soft margin) with default cost (C=1) 
       svm_model <- svm(diabetes~ ., data=trainset, method="nu-classification", kernel="linear") 
       pred_svm= predict(svm_model, testset, type='response') 
-      accuracy_svm=mean(pred_svm==actual) 
-      return(accuracy_svm)
+      ctx_svm <- confusionMatrix(pred_svm,actual)
+      return(ctx_svm)
 }
 
 runMultiNomialLogisticRegrsForDataset <- function(trainset,testset,actual){
 
         mlr_model <- multinom(diabetes~ ., data=trainset) 
         pred_mlr= predict(mlr_model, testset) 
-        accuracy_mlr=mean(pred_mlr==actual) 
-        return(accuracy_mlr)
+        ctx_mlr <- confusionMatrix(pred_mlr,actual)
+        return(ctx_mlr)
 }
+
+returnAccuracyFromConfusionMatrix <- function(confusionMatrix){
+          accuracy <- confusionMatrix$overall['Accuracy'] 
+          return (round(accuracy*100,2))
+}
+
+draw_confusion_matrix <- function(cmtrx) {
+
+                total <- sum(cmtrx$table)
+                res <- as.numeric(cmtrx$table)
+                # Generate color gradients. Palettes come from RColorBrewer.
+                greenPalette <- c("#F7FCF5","#E5F5E0","#C7E9C0","#A1D99B","#74C476","#41AB5D","#238B45","#006D2C","#00441B")
+                redPalette <- c("#FFF5F0","#FEE0D2","#FCBBA1","#FC9272","#FB6A4A","#EF3B2C","#CB181D","#A50F15","#67000D")
+                getColor <- function (greenOrRed = "green", amount = 0) {
+                if (amount == 0)
+                return("#FFFFFF")
+                palette <- greenPalette
+                if (greenOrRed == "red")
+                palette <- redPalette
+                colorRampPalette(palette)(100)[10 + ceiling(90 * amount / total)]
+                }
+                # set the basic layout
+                layout(matrix(c(1,1,2)))
+                par(mar=c(2,2,2,2))
+                plot(c(100, 345), c(300, 450), type = "n", xlab="", ylab="", xaxt='n', yaxt='n')
+                title('CONFUSION MATRIX', cex.main=2)
+                # create the matrix
+                classes = colnames(cmtrx$table)
+                rect(150, 430, 240, 370, col=getColor("green", res[1]))
+                text(195, 435, classes[1], cex=1.2)
+                rect(250, 430, 340, 370, col=getColor("red", res[3]))
+                text(295, 435, classes[2], cex=1.2)
+                text(125, 370, 'Predicted', cex=1.3, srt=90, font=2)
+                text(245, 450, 'Actual', cex=1.3, font=2)
+                rect(150, 305, 240, 365, col=getColor("red", res[2]))
+                rect(250, 305, 340, 365, col=getColor("green", res[4]))
+                text(140, 400, classes[1], cex=1.2, srt=90)
+                text(140, 335, classes[2], cex=1.2, srt=90)
+                # add in the cmtrx results
+                text(195, 400, res[1], cex=1.6, font=2, col='white')
+                text(195, 335, res[2], cex=1.6, font=2, col='white')
+                text(295, 400, res[3], cex=1.6, font=2, col='white')
+                text(295, 335, res[4], cex=1.6, font=2, col='white')
+                # add in the specifics
+                plot(c(100, 0), c(100, 0), type = "n", xlab="", ylab="", main = "DETAILS", xaxt='n', yaxt='n')
+                text(10, 85, names(cmtrx$byClass[1]), cex=1.2, font=2)
+                text(10, 70, round(as.numeric(cmtrx$byClass[1]), 3), cex=1.2)
+                text(30, 85, names(cmtrx$byClass[2]), cex=1.2, font=2)
+                text(30, 70, round(as.numeric(cmtrx$byClass[2]), 3), cex=1.2)
+                text(50, 85, names(cmtrx$byClass[5]), cex=1.2, font=2)
+                text(50, 70, round(as.numeric(cmtrx$byClass[5]), 3), cex=1.2)
+                text(70, 85, names(cmtrx$byClass[6]), cex=1.2, font=2)
+                text(70, 70, round(as.numeric(cmtrx$byClass[6]), 3), cex=1.2)
+                text(90, 85, names(cmtrx$byClass[7]), cex=1.2, font=2)
+                text(90, 70, round(as.numeric(cmtrx$byClass[7]), 3), cex=1.2)
+                # add in the accuracy information
+                text(30, 35, names(cmtrx$overall[1]), cex=1.5, font=2)
+                text(30, 20, round(as.numeric(cmtrx$overall[1]), 3), cex=1.4)
+                text(70, 35, names(cmtrx$overall[2]), cex=1.5, font=2)
+                text(70, 20, round(as.numeric(cmtrx$overall[2]), 3), cex=1.4)
+  }
 
 function(input, output, session) {
   
@@ -119,16 +174,31 @@ function(input, output, session) {
       mc=100 
       if (input$mlmodel =='NB') { 
               set.seed(120)
-             accuracy_nb =runNaiveBayesForTheDataset(trainset,testset,actual)
-              print(accuracy_nb)
+             ctx =runNaiveBayesForTheDataset(trainset,testset,actual)
+             if(!isMontecarlo){
+               output$ctx <- renderPlot({
+                 draw_confusion_matrix(ctx)
+               })
+             }
+              print(returnAccuracyFromConfusionMatrix(ctx))
       }
       else if(input$mlmodel =='SVM'){
-         accuracy_svm = runSvmForTheDataSet(trainset,testset,actual)
-          print(accuracy_svm)
+         ctx_svm = runSvmForTheDataSet(trainset,testset,actual)
+          if(!isMontecarlo){
+               output$ctx <- renderPlot({
+                 draw_confusion_matrix(ctx_svm)
+               })
+             }
+           print(returnAccuracyFromConfusionMatrix(ctx_svm))
       }
       else if(input$mlmodel =='MLR'){
-         accuracy_mlr = runMultiNomialLogisticRegrsForDataset(trainset,testset,actual)
-          print(accuracy_mlr)
+         ctx_svm_mlr = runMultiNomialLogisticRegrsForDataset(trainset,testset,actual)
+         if(!isMontecarlo){
+               output$ctx <- renderPlot({
+                 draw_confusion_matrix(ctx_svm_mlr)
+               })
+             }
+            print(returnAccuracyFromConfusionMatrix(ctx_svm_mlr))
       }
       else{
           isMontecarlo = TRUE
@@ -138,11 +208,11 @@ function(input, output, session) {
             trainset = dataset[indexes,] 
             testset = dataset[-indexes,] 
             # NB 
-            accuracy_nb =runNaiveBayesForTheDataset(trainset,testset,actual)
+            accuracy_nb =returnAccuracyFromConfusionMatrix(runNaiveBayesForTheDataset(trainset,testset,actual))
             #SVM
-            accuracy_svm = runSvmForTheDataSet(trainset,testset,actual)
+            accuracy_svm = returnAccuracyFromConfusionMatrix(runSvmForTheDataSet(trainset,testset,actual))
             # Multinomial Logistic reg 
-            accuracy_mlr = runMultiNomialLogisticRegrsForDataset(trainset,testset,actual)
+            accuracy_mlr = returnAccuracyFromConfusionMatrix(runMultiNomialLogisticRegrsForDataset(trainset,testset,actual))
             vect_accuracy=c(accuracy_svm,accuracy_nb,accuracy_mlr) 
             acc=acc+(1/mc)*vect_accuracy 
             } 

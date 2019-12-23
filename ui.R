@@ -113,13 +113,14 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                       selected = "NB" 
                                      ),
                              mainPanel(
-                               plotOutput("ctx") 
+                               #plotOutput("ctx") 
                              )        
 
                     ),
                             mainPanel(
                               h4("Applying Classification models on PimaIndianDiabetic2 dataset"),
                               verbatimTextOutput('ml'),
+                              plotOutput("ctx"),
                               h4("PimaIndianDiabetic2 dataset"),
                               DT::dataTableOutput('pima')
                             )
