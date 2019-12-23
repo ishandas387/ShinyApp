@@ -157,8 +157,6 @@ function(input, output, session) {
     DT::datatable(rendingStuff(), options = list(pageLength = 10))
   )
 
-  #########################CONTINUOUS PROBABILITY###################################
-  
   output$summary = DT::renderDataTable({ 
 
     if (input$dataset =='Seatbelts') { dispdata <- Seatbelts } 
@@ -168,7 +166,30 @@ function(input, output, session) {
    output$pima = DT::renderDataTable({ 
     DT::datatable(returnPimaIndianDataset(), options = list(lengthChange = TRUE))
    })
+
+  output$scatterPima  <- renderPlot({
+      dataset=returnPimaIndianDataset()  
+      if(input$xaxis != input$yaxis && (input$xaxis !="diabetes" && input$yaxis !="diabetes" )){
+        print(input$xaxis)
+        l <-dataset[input$xaxis]
+        ggplot(dataset, aes(x = dataset[input$xaxis], y = dataset[input$yaxis])) +
+        geom_point(aes(color = factor(diabetes)))
+      }else{
+        ggplot(dataset, aes(x = glucose, y = age)) +
+        geom_point(aes(color = factor(diabetes)))
+      }
+  })
   
+output$xaxis <- renderUI({
+    dataset<- returnPimaIndianDataset()
+    selectInput("xaxis",  choices = colnames(dataset), label = "X-Axis")
+  })
+
+output$yaxis <- renderUI({
+    dataset<- returnPimaIndianDataset()
+    selectInput("yaxis",  choices = colnames(dataset), label = "Y-Axis")
+  })
+
   output$ml <- renderPrint({
 
       
@@ -234,6 +255,11 @@ function(input, output, session) {
       }
 
   })
+
+
+   #########################CONTINUOUS PROBABILITY###################################
+  
+ 
   output$prob <- renderPrint({ 
     
     if (input$dataset =='Seatbelts') { 

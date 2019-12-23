@@ -197,6 +197,7 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
  ##############MACHINE LEARNING########################################################
   
            tabPanel("Machine Learning",
+           sidebarLayout(
                     sidebarPanel( 
                           selectInput("mlmodel", "Select Model", 
                                     
@@ -206,11 +207,14 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                                   "ALL 3 with monte carlo" = "ALL"), 
                                       selected = "NB" 
                                      ),
-                             mainPanel(
-                               #plotOutput("ctx") 
-                             )        
+                            uiOutput("xaxis"),
+                            uiOutput("yaxis")    
 
                     ),
+                             mainPanel(
+                               plotOutput(outputId ="scatterPima") 
+                             )        
+           ),
                             mainPanel(
                               h4("Applying Classification models on PimaIndianDiabetic2 dataset"),
                               verbatimTextOutput('ml'),
