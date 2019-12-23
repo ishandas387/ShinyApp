@@ -197,8 +197,7 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
  ##############MACHINE LEARNING########################################################
   
            tabPanel("Machine Learning",
-           sidebarLayout(
-                    sidebarPanel( 
+                      sidebarPanel( 
                           selectInput("mlmodel", "Select Model", 
                                     
                                       choices = c("Naive Bayes" = "NB", 
@@ -207,15 +206,14 @@ navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Mac
                                                   "ALL 3 with monte carlo" = "ALL"), 
                                       selected = "NB" 
                                      ),
+                                     
+                            helpText("Create scatterplot to analyse data.
+                            Default : Glucose - Age."),
                             uiOutput("xaxis"),
                             uiOutput("yaxis")    
-
-                    ),
-                             mainPanel(
-                               plotOutput(outputId ="scatterPima") 
-                             )        
-           ),
+                     ),
                             mainPanel(
+                              plotOutput(outputId ="scatterPima"), 
                               h4("Applying Classification models on PimaIndianDiabetic2 dataset"),
                               verbatimTextOutput('ml'),
                               plotOutput("ctx"),

@@ -28,7 +28,7 @@ runNaiveBayesForTheDataset <- function (trainset,testset,actual){
 
 runSvmForTheDataSet <- function(trainset,testset,actual){
     if(!isMontecarlo){
-                set.seed(1000)
+                set.seed(1001)
               }
       #build model linear kernel and C-classification (soft margin) with default cost (C=1) 
       svm_model <- svm(diabetes~ ., data=trainset, method="nu-classification", kernel="linear") 
@@ -39,7 +39,7 @@ runSvmForTheDataSet <- function(trainset,testset,actual){
 
 runMultiNomialLogisticRegrsForDataset <- function(trainset,testset,actual){
         if(!isMontecarlo){
-                set.seed(1000)
+                set.seed(1002)
               }
         mlr_model <- multinom(diabetes~ ., data=trainset,trace=FALSE) 
         pred_mlr= predict(mlr_model, testset) 
