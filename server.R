@@ -227,8 +227,8 @@ function(input, output, session) {
         plotdf <- as.data.frame(accuracyMatrix) 
         print(plotdf)
         output$ctx <- renderPlot({
-        p <-ggplot(plotdf, aes(accuracyMatrix, accuracyMatrix))
-        p +geom_bar(stat = "identity")
+       p <-ggplot(plotdf, aes(x=seq_along(accuracyMatrix),y=accuracyMatrix))+
+        geom_bar(stat="identity")+theme_minimal()
 
         })
       }
