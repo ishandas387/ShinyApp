@@ -161,7 +161,8 @@ function(input, output, session) {
     print('*****')
     print(x$columnName)
     hist(x[[columnName]], col = "#75AADB", border = "white",
-         xlab = "Waiting time to next eruption (in mins)",
+          xlab="values",
+          breaks = 20,
          main = paste("Histogram of ",columnName,sep=" - "))
 
   })
@@ -257,8 +258,10 @@ output$yaxis <- renderUI({
         plotdf <- as.data.frame(accuracyMatrix) 
         print(plotdf)
         output$ctx <- renderPlot({
-       p <-ggplot(plotdf, aes(x=seq_along(accuracyMatrix),y=accuracyMatrix))+
-        geom_bar(stat="identity")+theme_minimal()
+       
+          barplot(accuracyMatrix, main="Accuracy",
+                  xlab="Machine learning model", col = rainbow(5),xlim=c(0,100),
+                  width = 0.1,horiz = TRUE)
 
         })
       }
@@ -269,46 +272,26 @@ output$yaxis <- renderUI({
 
   output$discretehistogram <- renderPlot({ 
     
-    
-    
     # binomial  
-    
     if (input$dismodel == 'binomial') { 
       
       par(mfrow=c(1,2))  
-      
       d <- density(rbinom(1000,input$n,input$p))  
-      
       plot(d, main="Kernel Density of generated data")  
-      
       polygon(d, col="green", border="red") 
-      
       x=0:input$n  
-      
       plot(x,dbinom(x,input$n,input$p))  
-      
-      
-      
     } 
     
     # poisson 
-    
-    
-    
     if (input$dismodel == 'poisson') { 
       
       par(mfrow=c(1,2))   
-      
       D=rpois(input$s, input$lam)  
-      
       tab=table(D)  
-      
-      barplot(tab,col='purple')  
-      
+      barplot(tab,col='purple',horiz=TRUE)  
       x1=0:input$max  
-      
       y1=dpois(x1,input$lam)  
-      
       plot(x1,y1,type='b', col = 'purple')  
       
     } 
@@ -319,43 +302,23 @@ output$yaxis <- renderUI({
     if (input$dismodel == 'geometric') { 
       
       par(mfrow=c(1,2)) 
-      
       D=rgeom(input$s, input$p)  
-      
       tab=table(D)  
-      
       barplot(tab,col='red')  
-      
       x2=0:input$max  
-      
       y2=dgeom(x2,input$p)  
-      
       plot(x2,y2,type='b')  
-      
     } 
-    
-    
-    
   })    
   
   
   
   output$discreteTab <- renderTable({  
     
-    
-    
     p1=dbinom(input$j1,input$n, input$p)  
-    
     p2=dpois(input$j2,input$lam)  
-    
     p3=dgeom(input$j3,input$p)  
-    
     c(p1,p2,p3) 
-    
-    
-    
-    
-    
   })
 
   
@@ -392,17 +355,11 @@ output$yaxis <- renderUI({
     } 
     
     if (input$dataset =='USArrests') {
-
       print(input$column2)
-
       if (input$column2 == 'Murder') { x <- USArrests$Murder}
-
       if (input$column2 == 'Assault') { x <- USArrests$Assault}
-
       if (input$column2 == 'UrbanPop') { x <- USArrests$UrbanPop}
-
       if (input$column2 == 'Rape') { x <- USArrests$Rape}
-
     }
     
     
@@ -410,40 +367,25 @@ output$yaxis <- renderUI({
     # normal 
     
     if (input$conmodel == 'normal')  
-      
     {  
-      
       d <- (mean(rnorm(input$s,mean(x), sd(x))))
       print(d)
       output$histogram <- renderPlot({
-
         plot(d, main="Kernel Density of generated data", col = 'red')
-
       })
-      
     } 
     
     # exponential 
     
     
     if (input$conmodel == 'exponential')  
-      
     { 
-      
       print(mean(rexp(input$s,1/mean(x)))) 
-      
     } 
     
-    
     if (input$conmodel == 'uniform') 
-      
       {
-      
-      
       print(mean(runif(input$s, min = 0, max = 1))) 
-      
-      
-      
     } 
     
   })    

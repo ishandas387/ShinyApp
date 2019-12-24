@@ -1,7 +1,7 @@
 library(shiny)
 library(markdown)
 
-navbarPage(theme = shinythemes::shinytheme("cerulean"),"Applied Statistics & Machine Learning",
+navbarPage(theme = shinythemes::shinytheme("united"),"Applied Statistics & Machine Learning",
            
 ############## DESCRIPTIVE STATISTICS ########################################################
 
@@ -224,20 +224,16 @@ sidebarLayout(
 
 tabPanel("Team",
          
-         sidebarPanel( 
-           
-           titlePanel("MSc.Business Analytics"),
-
-           h5("1. ISHAN DAS - 10532854"),
-           h5("2. LUKOSE PANNAPARA - 10529675"),
-           h5("3. VARAD SANT - 10534368"),
-           h5("4. BHARAT SRINIVAS - 10532496")
-           
-           )
-           
-         ), 
+        
          mainPanel(  
            
-           
+           h2("MSc.Business Analytics - CA1- 24th Dec 2019"),
+
+           h5(" ISHAN DAS - 10532854"),
+           h5(" LUKOSE PANNAPARA - 10529675"),
+           h5(" VARAD SANT - 10534368"),
+           h5(" BHARAT SRINIVAS - 10532496")
          )          
+           
+         )
 )
