@@ -189,9 +189,9 @@ sidebarLayout(
                     )          
            ),
 
-
  ##############MACHINE LEARNING########################################################
   #author - Ishan
+
            tabPanel("Machine Learning",
                       sidebarPanel( 
                           selectInput("mlmodel", "Select Model", 
@@ -227,7 +227,7 @@ tabPanel("Team",
         
          mainPanel(  
            
-           h2("MSc.Business Analytics - CA1- 24th Dec 2019"),
+           h2("MSc. Business Analytics - CA1- 24th Dec 2019"),
 
            h5(" LUKOSE PANNAPARA - 10529675"),
            helpText("Worked on descriptive stats module & MLR model"),
