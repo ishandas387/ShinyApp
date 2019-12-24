@@ -134,3 +134,60 @@ ggplot(mutatedStuff,aes(glucose, prob)) +
   
 
 
+"Multiple logistic regression
+The multiple logistic regression is used to predict the probability of class membership based on multiple predictor variables, as follow:"
+
+modelmultiple <- glm( diabetes ~ glucose + mass + pregnant, 
+              data = train.data, family = binomial)
+summary(modelmultiple)
+
+"Or just doing it with all the values"
+
+
+modelmultipleAll <- glm( diabetes ~ ., 
+                      data = train.data, family = binomial)
+summary(modelmultipleAll)
+
+"Estimate: the intercept (b0) and the beta coefficient estimates associated to each predictor variable
+Std.Error: the standard error of the coefficient estimates. This represents the accuracy of the coefficients. The larger the standard error, the less confident we are about the estimate.
+z value: the z-statistic, which is the coefficient estimate (column 2) divided by the standard error of the estimate (column 3)
+Pr(>|z|): The p-value corresponding to the z-statistic. The smaller the p-value, the more significant the estimate is."
+
+
+"It can be seen that only 5 out of the 8 predictors are significantly associated to the outcome. These include: pregnant, glucose, pressure, mass and pedigree.
+The coefficient estimate of the variable glucose is b = 0.045, which is positive. This means that an increase in glucose is associated with increase
+in the probability of being diabetes-positive. However the coefficient
+for the variable pressure is b = -0.007, which is negative. 
+This means that an increase in blood pressure will be associated 
+with a decreased probability of being diabetes-positive."
+
+"The regression coefficient for glucose is 0.042. 
+This indicate that one unit increase in the glucose concentration
+will increase the odds of being diabetes-positive by exp(0.042) 1.04 times."
+
+
+" it can be noticed that some variables - triceps, insulin and age -
+are not statistically significant. Keeping them in the model may contribute 
+to overfitting. Therefore, they should be eliminated. This can be done 
+automatically using statistical techniques, including stepwise regression
+and penalized regression methods."
+
+
+modelReduced <- glm( diabetes ~ pregnant + glucose + pressure + mass + pedigree, 
+              data = train.data, family = binomial)
+"Making predictions
+We'll make predictions using the test data in order to evaluate the performance of our logistic regression model.
+
+The procedure is as follow:
+  
+  Predict the class membership probabilities of observations based on predictor variables
+Assign the observations to the class with highest probability score (i.e above 0.5)
+The R function predict() can be used to predict the probability of being diabetes-positive, given the predictor values.
+
+Predict the probabilities of being diabetes-positive:"
+  
+  probabilities <- modelReduced %>% predict(test.data, type = "response")
+head(probabilities)
+
+predicted.classes <- ifelse(probabilities > 0.5, "pos", "neg")
+head(predicted.classes)
