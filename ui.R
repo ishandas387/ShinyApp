@@ -190,7 +190,7 @@ sidebarLayout(
            ),
 
 
- ##############MACHINE LEARNING########################################################
+ ############## MACHINE LEARNING ########################################################
   
            tabPanel("Machine Learning",
                       sidebarPanel( 
@@ -227,7 +227,7 @@ tabPanel("Team",
         
          mainPanel(  
            
-           h2("MSc.Business Analytics - CA1- 24th Dec 2019"),
+           h2("MSc. Business Analytics - CA1- 24th Dec 2019"),
 
            h5(" ISHAN DAS - 10532854"),
            h5(" LUKOSE PANNAPARA - 10529675"),
