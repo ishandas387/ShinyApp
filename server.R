@@ -8,14 +8,20 @@ library(nnet)
 
 ############################## ML Functions ################################################
 #author -ishan
+#This variable is used to check if user has selected montecarlo run
 isMontecarlo = FALSE
+
+"This function returns Pima datset"
 returnPimaIndianDataset <- function(){
       data("PimaIndiansDiabetes2", package = "mlbench")
       PimaIndiansDiabetes2 <- na.omit(PimaIndiansDiabetes2)
       dataset=PimaIndiansDiabetes2
       return(dataset)  
 }
+
 #author -ishan
+"This function runs naiveBayes on trainset,testset and actual value passed to it.
+Returns a confusion matrix"
 runNaiveBayesForTheDataset <- function (trainset,testset,actual){
               if(!isMontecarlo){
                 set.seed(1000)
@@ -25,7 +31,10 @@ runNaiveBayesForTheDataset <- function (trainset,testset,actual){
                ctx <- confusionMatrix(pred_nb,actual)
               return (ctx)
 }
+
 #author -ishan
+"This function runs SVM on trainset,testset and actual value passed to it.
+Returns a confusion matrix"
 runSvmForTheDataSet <- function(trainset,testset,actual){
     if(!isMontecarlo){
                 set.seed(1001)
@@ -36,7 +45,10 @@ runSvmForTheDataSet <- function(trainset,testset,actual){
       ctx_svm <- confusionMatrix(pred_svm,actual)
       return(ctx_svm)
 }
+
 #author - lukose
+"This function runs MLR on trainset,testset and actual value passed to it.
+Returns a confusion matrix"
 runMultiNomialLogisticRegrsForDataset <- function(trainset,testset,actual){
         if(!isMontecarlo){
                 set.seed(1002)
@@ -47,12 +59,14 @@ runMultiNomialLogisticRegrsForDataset <- function(trainset,testset,actual){
         return(ctx_mlr)
 }
 
+#Returns accuracy from confusion matrix.
 returnAccuracyFromConfusionMatrix <- function(confusionMatrix){
           accuracy <- confusionMatrix$overall['Accuracy'] 
           return (round(accuracy*100,2))
 }
 
 #author -ishan
+#Draws confusion matrix in UI given a confusion matrix is passed.
 draw_confusion_matrix <- function(cmtrx, headerName) {
 
                 total <- sum(cmtrx$table)
@@ -113,6 +127,7 @@ function(input, output, session) {
   
 ################# Returning Data Frame #############################
   #author- lukose
+  #Uploads a dataset csv 
   rendingStuff <- reactive({
     
     # input$file1 will be NULL initially. After the user selects
@@ -143,6 +158,7 @@ function(input, output, session) {
   
   ##################### Summary #################################
   #author - lukose
+  #Prints the summary of uploaded dataset.
   output$c2summary <- renderPrint({
       ds <-  rendingStuff()
       output$histogramaxis <- renderUI({
@@ -151,8 +167,9 @@ function(input, output, session) {
       summary(ds)
   })
   
-  ################### Plot Data Table ############################
+  ################### Plot Histogram ############################
   #author -lukose
+  #Draws the histogram based on input of column selected.
   output$desc_histogram <- renderPlot({
 
      x  <- rendingStuff()
@@ -166,12 +183,14 @@ function(input, output, session) {
 
   ############################# Convert into Datatable #########################################
   #author -lukose
+  #Loads the datatable.
   output$ex1 <- DT::renderDataTable(
     DT::datatable(rendingStuff(), options = list(pageLength = 10))
   )
   
  ################################# DISCRETE ##########################################################
   #author - Varad
+  #Draws histogram based on input model selected.
   output$discretehistogram <- renderPlot({ 
     
     # binomial  
@@ -229,6 +248,7 @@ function(input, output, session) {
 #################################### CONTINUOUS PROBABILITY #######################################
 
   #author - Bharat
+  #Renders datatable 
   output$summary = DT::renderDataTable({ 
     
     if (input$dataset =='Seatbelts') { dispdata <- Seatbelts } 
@@ -236,6 +256,7 @@ function(input, output, session) {
     DT::datatable(data.frame(dispdata), options = list(lengthChange = TRUE)) 
   }) 
     
+  #Prints the calculated value based on model selected.  
   output$prob <- renderPrint({ 
     
     if (input$dataset =='Seatbelts') { 
@@ -293,10 +314,12 @@ function(input, output, session) {
   })    
    ######################### MACHINE LEARNING ###################################
   #author - ishan
+  #renders datatable with pima data.
    output$pima = DT::renderDataTable({ 
     DT::datatable(returnPimaIndianDataset(), options = list(lengthChange = TRUE))
    })
 
+  #Renders the initial scatter plot. Defaults to Glucose-age
   output$scatterPima  <- renderPlot({
       dataset=returnPimaIndianDataset()  
       if(input$xaxis != input$yaxis && (input$xaxis !="diabetes" && input$yaxis !="diabetes" )){
@@ -307,17 +330,21 @@ function(input, output, session) {
         geom_point(aes(color = factor(diabetes)))
       }
   })
-  
+
+#populates the dropdown for x-axis  
 output$xaxis <- renderUI({
     dataset<- returnPimaIndianDataset()
     selectInput("xaxis",  choices = colnames(dataset), label = "X-Axis")
   })
 
+#populates the dropdown for y-axis
 output$yaxis <- renderUI({
     dataset<- returnPimaIndianDataset()
     selectInput("yaxis",  choices = colnames(dataset), label = "Y-Axis")
   })
 
+  "Prints the accuracy of model selected. Renders confusion matrix of the same. 
+  If monte carlo run, Prints the combined accuracy and renders a barplot."
   output$ml <- renderPrint({
 
       
