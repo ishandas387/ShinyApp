@@ -303,7 +303,6 @@ function(input, output, session) {
         ggplot(dataset, aes_string(x = input$xaxis, y = input$yaxis)) +
         geom_point(aes(color = factor(diabetes)))
       }else{
-        #textInput("defaultwarning", placeholder = "What year(s) does this survey cover?")
         ggplot(dataset, aes(x = glucose, y = age)) +
         geom_point(aes(color = factor(diabetes)))
       }
