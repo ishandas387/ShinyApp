@@ -165,7 +165,7 @@ function(input, output, session) {
   })
 
   ############################# Convert into Datatable #########################################
-  
+  #author -lukose
   output$ex1 <- DT::renderDataTable(
     DT::datatable(rendingStuff(), options = list(pageLength = 10))
   )
