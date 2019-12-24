@@ -4,7 +4,7 @@ library(markdown)
 navbarPage(theme = shinythemes::shinytheme("united"),"Applied Statistics & Machine Learning",
            
 ############## DESCRIPTIVE STATISTICS ########################################################
-
+#author - Lukose
            tabPanel("Descriptive Statistics",
                     sidebarLayout(
                       sidebarPanel(
@@ -44,7 +44,7 @@ navbarPage(theme = shinythemes::shinytheme("united"),"Applied Statistics & Machi
            ),
 
 ############## DISCRETE ########################################################
-
+#author - Varad
 tabPanel("Discrete Random Variables",
 sidebarLayout(
         sidebarPanel(
@@ -132,7 +132,7 @@ sidebarLayout(
 ),
 
 ##############CONTINUOUS PROBABILITY########################################################
-
+#author - Bharat
            tabPanel("Continuous Probability",
                     
                     sidebarPanel( 
@@ -191,7 +191,7 @@ sidebarLayout(
 
 
  ##############MACHINE LEARNING########################################################
-  
+  #author - Ishan
            tabPanel("Machine Learning",
                       sidebarPanel( 
                           selectInput("mlmodel", "Select Model", 
@@ -229,10 +229,14 @@ tabPanel("Team",
            
            h2("MSc.Business Analytics - CA1- 24th Dec 2019"),
 
-           h5(" ISHAN DAS - 10532854"),
            h5(" LUKOSE PANNAPARA - 10529675"),
+           helpText("Worked on descriptive stats module & MLR model"),
            h5(" VARAD SANT - 10534368"),
-           h5(" BHARAT SRINIVAS - 10532496")
+           helpText("Worked on discrete prob module & visualization"),
+           h5(" BHARAT SRINIVAS - 10532496"),
+           helpText("Worked on continious prob module & UI alignments"),
+           h5(" ISHAN DAS - 10532854"),
+           helpText("Worked on NB,SVM and montecarlo module & vizualization")
          )          
            
          )

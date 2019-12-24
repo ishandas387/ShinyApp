@@ -7,7 +7,7 @@ library(nnet)
 
 
 ############################## ML Functions ################################################
-
+#author -ishan
 isMontecarlo = FALSE
 returnPimaIndianDataset <- function(){
       data("PimaIndiansDiabetes2", package = "mlbench")
@@ -15,7 +15,7 @@ returnPimaIndianDataset <- function(){
       dataset=PimaIndiansDiabetes2
       return(dataset)  
 }
-
+#author -ishan
 runNaiveBayesForTheDataset <- function (trainset,testset,actual){
               if(!isMontecarlo){
                 set.seed(1000)
@@ -25,7 +25,7 @@ runNaiveBayesForTheDataset <- function (trainset,testset,actual){
                ctx <- confusionMatrix(pred_nb,actual)
               return (ctx)
 }
-
+#author -ishan
 runSvmForTheDataSet <- function(trainset,testset,actual){
     if(!isMontecarlo){
                 set.seed(1001)
@@ -36,7 +36,7 @@ runSvmForTheDataSet <- function(trainset,testset,actual){
       ctx_svm <- confusionMatrix(pred_svm,actual)
       return(ctx_svm)
 }
-
+#author - lukose
 runMultiNomialLogisticRegrsForDataset <- function(trainset,testset,actual){
         if(!isMontecarlo){
                 set.seed(1002)
@@ -52,6 +52,7 @@ returnAccuracyFromConfusionMatrix <- function(confusionMatrix){
           return (round(accuracy*100,2))
 }
 
+#author -ishan
 draw_confusion_matrix <- function(cmtrx, headerName) {
 
                 total <- sum(cmtrx$table)
@@ -111,7 +112,7 @@ draw_confusion_matrix <- function(cmtrx, headerName) {
 function(input, output, session) {
   
 ################# Returning Data Frame #############################
-
+  #author- lukose
   rendingStuff <- reactive({
     
     # input$file1 will be NULL initially. After the user selects
@@ -141,7 +142,7 @@ function(input, output, session) {
   
   
   ##################### Summary #################################
-  
+  #author - lukose
   output$c2summary <- renderPrint({
       ds <-  rendingStuff()
       output$histogramaxis <- renderUI({
@@ -151,15 +152,11 @@ function(input, output, session) {
   })
   
   ################### Plot Data Table ############################
-  
+  #author -lukose
   output$desc_histogram <- renderPlot({
 
      x  <- rendingStuff()
     columnName <- input$histogramaxis
-    print(columnName)
-    print(x[columnName])
-    print('*****')
-    print(x$columnName)
     hist(x[[columnName]], col = "#75AADB", border = "white",
           xlab="values",
           breaks = 20,
@@ -173,7 +170,129 @@ function(input, output, session) {
     DT::datatable(rendingStuff(), options = list(pageLength = 10))
   )
   
-  ######################### MACHINE LEARNING ###################################
+ ################################# DISCRETE ##########################################################
+  #author - Varad
+  output$discretehistogram <- renderPlot({ 
+    
+    # binomial  
+    if (input$dismodel == 'binomial') { 
+      
+      par(mfrow=c(1,2))  
+      d <- density(rbinom(1000,input$n,input$p))  
+      plot(d, main="Kernel Density of generated data")  
+      polygon(d, col="green", border="red") 
+      x=0:input$n  
+      plot(x,dbinom(x,input$n,input$p))  
+    } 
+    
+    # poisson 
+    if (input$dismodel == 'poisson') { 
+      
+      par(mfrow=c(1,2))   
+      D=rpois(input$s, input$lam)  
+      tab=table(D)  
+      barplot(tab,col='purple',horiz=TRUE)  
+      x1=0:input$max  
+      y1=dpois(x1,input$lam)  
+      plot(x1,y1,type='b', col = 'purple')  
+      
+    } 
+    
+    
+    # geometric  
+    
+    if (input$dismodel == 'geometric') { 
+      
+      par(mfrow=c(1,2)) 
+      D=rgeom(input$s, input$p)  
+      tab=table(D)  
+      barplot(tab,col='red')  
+      x2=0:input$max  
+      y2=dgeom(x2,input$p)  
+      plot(x2,y2,type='b')  
+    } 
+  })    
+  
+  
+  
+  output$discreteTab <- renderTable({  
+    
+    p1=dbinom(input$j1,input$n, input$p)  
+    p2=dpois(input$j2,input$lam)  
+    p3=dgeom(input$j3,input$p)  
+    c(p1,p2,p3) 
+  })
+
+  
+  
+  
+#################################### CONTINUOUS PROBABILITY #######################################
+
+  #author - Bharat
+  output$summary = DT::renderDataTable({ 
+    
+    if (input$dataset =='Seatbelts') { dispdata <- Seatbelts } 
+    else if (input$dataset =='USArrests') { dispdata <- USArrests } 
+    DT::datatable(data.frame(dispdata), options = list(lengthChange = TRUE)) 
+  }) 
+    
+  output$prob <- renderPrint({ 
+    
+    if (input$dataset =='Seatbelts') { 
+      print(input$column1)   
+      if (input$column1 == 'DriversKilled') { x <- data.frame(Seatbelts)$DriversKilled} 
+      if (input$column1 == 'drivers') { x <- data.frame(Seatbelts)$drivers} 
+      if (input$column1 == 'front') { x <- data.frame(Seatbelts)$front} 
+      if (input$column1 == 'rear') { x <- data.frame(Seatbelts)$rear} 
+      if (input$column1 == 'kms') { x <- data.frame(Seatbelts)$kms}
+      if (input$column1 == 'PetrolPrice') { x <- data.frame(Seatbelts)$PetrolPrice}
+      if (input$column1 == 'VanKilled') { x <- data.frame(Seatbelts)$VanKilled}
+      
+      if (input$column1 == 'law')  
+      {  
+        print('law is not the right column to predict') 
+        x <- 0  
+      }     
+      
+    } 
+    
+    if (input$dataset =='USArrests') {
+      print(input$column2)
+      if (input$column2 == 'Murder') { x <- USArrests$Murder}
+      if (input$column2 == 'Assault') { x <- USArrests$Assault}
+      if (input$column2 == 'UrbanPop') { x <- USArrests$UrbanPop}
+      if (input$column2 == 'Rape') { x <- USArrests$Rape}
+    }
+    
+    
+    
+    # normal 
+    
+    if (input$conmodel == 'normal')  
+    {  
+      d <- (mean(rnorm(input$s,mean(x), sd(x))))
+      print(d)
+      output$histogram <- renderPlot({
+        plot(d, main="Kernel Density of generated data", col = 'red')
+      })
+    } 
+    
+    # exponential 
+    
+    
+    if (input$conmodel == 'exponential')  
+    { 
+      print(mean(rexp(input$s,1/mean(x)))) 
+    } 
+    
+    if (input$conmodel == 'uniform') 
+      {
+      print(mean(runif(input$s, min = 0, max = 1))) 
+    } 
+    
+  })    
+   ######################### MACHINE LEARNING ###################################
+  #author - ishan
    output$pima = DT::renderDataTable({ 
     DT::datatable(returnPimaIndianDataset(), options = list(lengthChange = TRUE))
    })
@@ -268,126 +387,5 @@ output$yaxis <- renderUI({
 
   })
   
-################################## DISCRETE ##########################################################
-
-  output$discretehistogram <- renderPlot({ 
-    
-    # binomial  
-    if (input$dismodel == 'binomial') { 
-      
-      par(mfrow=c(1,2))  
-      d <- density(rbinom(1000,input$n,input$p))  
-      plot(d, main="Kernel Density of generated data")  
-      polygon(d, col="green", border="red") 
-      x=0:input$n  
-      plot(x,dbinom(x,input$n,input$p))  
-    } 
-    
-    # poisson 
-    if (input$dismodel == 'poisson') { 
-      
-      par(mfrow=c(1,2))   
-      D=rpois(input$s, input$lam)  
-      tab=table(D)  
-      barplot(tab,col='purple',horiz=TRUE)  
-      x1=0:input$max  
-      y1=dpois(x1,input$lam)  
-      plot(x1,y1,type='b', col = 'purple')  
-      
-    } 
-    
-    
-    # geometric  
-    
-    if (input$dismodel == 'geometric') { 
-      
-      par(mfrow=c(1,2)) 
-      D=rgeom(input$s, input$p)  
-      tab=table(D)  
-      barplot(tab,col='red')  
-      x2=0:input$max  
-      y2=dgeom(x2,input$p)  
-      plot(x2,y2,type='b')  
-    } 
-  })    
-  
-  
-  
-  output$discreteTab <- renderTable({  
-    
-    p1=dbinom(input$j1,input$n, input$p)  
-    p2=dpois(input$j2,input$lam)  
-    p3=dgeom(input$j3,input$p)  
-    c(p1,p2,p3) 
-  })
-
-  
-  
-  
-#################################### CONTINUOUS PROBABILITY #######################################
-
-  
-  output$summary = DT::renderDataTable({ 
-    
-    if (input$dataset =='Seatbelts') { dispdata <- Seatbelts } 
-    else if (input$dataset =='USArrests') { dispdata <- USArrests } 
-    DT::datatable(data.frame(dispdata), options = list(lengthChange = TRUE)) 
-  }) 
-    
-  output$prob <- renderPrint({ 
-    
-    if (input$dataset =='Seatbelts') { 
-      print(input$column1)   
-      if (input$column1 == 'DriversKilled') { x <- data.frame(Seatbelts)$DriversKilled} 
-      if (input$column1 == 'drivers') { x <- data.frame(Seatbelts)$drivers} 
-      if (input$column1 == 'front') { x <- data.frame(Seatbelts)$front} 
-      if (input$column1 == 'rear') { x <- data.frame(Seatbelts)$rear} 
-      if (input$column1 == 'kms') { x <- data.frame(Seatbelts)$kms}
-      if (input$column1 == 'PetrolPrice') { x <- data.frame(Seatbelts)$PetrolPrice}
-      if (input$column1 == 'VanKilled') { x <- data.frame(Seatbelts)$VanKilled}
-      
-      if (input$column1 == 'law')  
-      {  
-        print('law is not the right column to predict') 
-        x <- 0  
-      }     
-      
-    } 
-    
-    if (input$dataset =='USArrests') {
-      print(input$column2)
-      if (input$column2 == 'Murder') { x <- USArrests$Murder}
-      if (input$column2 == 'Assault') { x <- USArrests$Assault}
-      if (input$column2 == 'UrbanPop') { x <- USArrests$UrbanPop}
-      if (input$column2 == 'Rape') { x <- USArrests$Rape}
-    }
-    
-    
-    
-    # normal 
-    
-    if (input$conmodel == 'normal')  
-    {  
-      d <- (mean(rnorm(input$s,mean(x), sd(x))))
-      print(d)
-      output$histogram <- renderPlot({
-        plot(d, main="Kernel Density of generated data", col = 'red')
-      })
-    } 
-    
-    # exponential 
-    
-    
-    if (input$conmodel == 'exponential')  
-    { 
-      print(mean(rexp(input$s,1/mean(x)))) 
-    } 
-    
-    if (input$conmodel == 'uniform') 
-      {
-      print(mean(runif(input$s, min = 0, max = 1))) 
-    } 
-    
-  })    
 
 }
