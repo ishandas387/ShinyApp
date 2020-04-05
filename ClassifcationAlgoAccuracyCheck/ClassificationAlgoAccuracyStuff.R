@@ -22,6 +22,9 @@ dataset=PimaIndiansDiabetes2
 acc=c(SVM =0,NB= 0, MLR =0); 
 mc=100 
 
+ggplot(dataset, aes(x = glucose, y = age)) +
+  geom_point(aes(color = factor(diabetes)))
+
 table(dataset$diabetes)
 #split into training and test sets 
 for(i in 1:mc){ 
@@ -71,10 +74,19 @@ for(i in 1:mc){
   
 } 
 acc
-data.frame(as.list(acc))
+pdf <- data.frame(acc)
+pdf
 plotdf <- as.data.frame(acc) 
 plotdf
-p <-ggplot(acc, aes(x=seq_along(acc),y=acc))+
+
+acc <- acc*100
+table(acc)
+
+barplot(acc, main="Accuracy",
+        xlab="Machine learning model", col = rainbow(5),xlim=c(0,100),
+        width = 0.1,horiz = TRUE)
+
+p <-ggplot(plotdf, aes(x=seq_along(acc),y=acc))+
 geom_bar(stat="identity")+theme_minimal()
 
 
